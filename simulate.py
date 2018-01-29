@@ -10,12 +10,14 @@ import time
 def simulate_plasticity_ludwig(material_properties, model_params):
     load = model_params[0]
 
-    if len(material_params) != 3:
+    if len(material_properties) != 3:
         print('Wrong number of material properties provided!')
     if len(model_params) != 1:
         print('Wrong number of model parameters rpovided!')
 
-    yield_stress, K, n = *material_properties
+    yield_stress = material_properties[0]
+    K = material_properties[1]
+    n = material_properties[2]
 
     job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(load, np.random.randint(99999), yield_stress, K, n)
     job_name = job_name.replace('.', '-')
@@ -28,7 +30,6 @@ def simulate_plasticity_ludwig(material_properties, model_params):
                            'K={}\n'.format(K) +
                            'n={}\n'.format(n) +
                            'load={}\n'.format(load) +
-                           'coeff_of_friction={}'.format(coeff_of_friction) +
                            'strains = np.linspace(0, 2, num=500)\n' +
                            'stresses = yield_stress + K * (strains ** n) \n' +
                            'plasticity_table = np.empty((len(strains), 2))\n' +
@@ -74,7 +75,9 @@ def simulate_plasticity_voce(material_properties, model_params):
     if len(model_params) != 1:
         print('Wrong number of model parameters rpovided!')
 
-    yield_stress, saturation_stress, characteristic_strain = *material_properties
+    yield_stress = material_properties[0]
+    saturation_stress = material_properties[1]
+    characteristic_strain = material_properties[2]
 
     job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(load, np.random.randint(99999), yield_stress, K, n)
     job_name = job_name.replace('.', '-')

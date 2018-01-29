@@ -24,14 +24,16 @@ def calc_sum_of_squares(material_variables, model_params, exp_file, model):
        to be compared with experiment. Calculate the sum of the square 
        of the residuals, i.e. a quantity to be minimised to increase 
        the agreement between model and experiment.'''
+    experimental_filename = exp_file
+    expCsv = np.genfromtxt(experimental_filename, delimiter=",")
+    exp_disp = expCsv[:,1]
+
     try:
         modelled_disp = run_simulation(material_variables, model_params)[:,1]
     except:
         modelled_disp = np.ones_like(exp_disp)
         print('Abaqus run failed! Attempting to continue...')
-    experimental_filename = exp_files[i]
-    expCsv = np.genfromtxt(experimental_filename, delimiter=",")
-    exp_disp = expCsv[:,1]
+
     
     if len(modelled_disp) != len(exp_disp):
         modelled_disp = np.zeros_like(exp_disp)
@@ -39,7 +41,7 @@ def calc_sum_of_squares(material_variables, model_params, exp_file, model):
         ## I've made the assumption that there are the same number of data points
         # at every load. If not a correction needs to be made here.
     
-    sum_of_square = np.sum((exp_disp - modelled_disp) ** 2)
+    sum_of_squares = np.sum((exp_disp - modelled_disp) ** 2)
     r_squared = calc_r_squared(exp_disp, modelled_disp)
         
     rhist_file = open('./results/r_sq-history.txt', 'at')
@@ -66,7 +68,7 @@ except:
 
 
 # grab some stuff from the inputs file:
-run_simulation = simulate.models[inputs.model)
+run_simulation = simulate.models[inputs.model]
 model_params = inputs.model_params
 exp_file = inputs.exp_file
 material_variables = inputs.init_material_properties

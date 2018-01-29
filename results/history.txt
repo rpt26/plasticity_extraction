@@ -1,0 +1,1 @@
+sum of squares of residuals, yeild_stress, K, n
