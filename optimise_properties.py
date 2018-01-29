@@ -9,17 +9,6 @@ import time
 import simulate
 import inputs
 
-def calc_g(exp, data):
-    top = np.sum((exp - data) **2)
-    average = np.mean(exp)
-    bottom = np.sum((data - average)**2)
-
-    if bottom > 1E-6:
-        g =1-((top)/(bottom))**(0.5)
-    else: 
-        g = 2
-    return g
-
 def calc_r_squared(exp, model):
     '''Return the coefficient of determination to characterise
     the likelihood that a model is adequately explaining some data'''
@@ -30,25 +19,16 @@ def calc_r_squared(exp, model):
     
     return r_squared
 
-def calc_scaled_sum_of_squares(exp, data):
-    '''Calculate the sum of squares of the residuals between some
-       experimental data and some data that has been generated to fit it.'''
-    residuals_squared = (exp*((exp - data)** 2))
-    scaled_sum_of_squares = residuals_squared.sum()
-    return scaled_sum_of_squares
-
-
-def calc_combined_sum_of_squares(material_variables, model_params, exp_file, model):
-    
-    yield_stress = material_variables[0]
-    K = material_variables[1]
-    n = material_variables[2]    
-    
+def calc_sum_of_squares(material_variables, model_params, exp_file, model):
+    '''Use FEM to generate a data saet from some material properties 
+       to be compared with experiment. Calculate the sum of the square 
+       of the residuals, i.e. a quantity to be minimised to increase 
+       the agreement between model and experiment.'''
     try:
-        modelled_disp = run_simulation(material_variables, load)[:,1]
+        modelled_disp = run_simulation(material_variables, model_params)[:,1]
     except:
         modelled_disp = np.ones_like(exp_disp)
-        print('Abaqus run failed!')
+        print('Abaqus run failed! Attempting to continue...')
     experimental_filename = exp_files[i]
     expCsv = np.genfromtxt(experimental_filename, delimiter=",")
     exp_disp = expCsv[:,1]
@@ -63,12 +43,12 @@ def calc_combined_sum_of_squares(material_variables, model_params, exp_file, mod
     r_squared = calc_r_squared(exp_disp, modelled_disp)
         
     rhist_file = open('./results/r_sq-history.txt', 'at')
-    # save r_squared,  average, log10_C, n, m
+    # save r_squared,  material properties (currently 3 for all the laws used
     rhist_file.write('{},{},{},{}\n'.format(np.mean(r_squared), *material_variables))
     rhist_file.close()
     
     hist_file = open('./results/history.txt', 'at')
-    # save sum of squares, yield stress, K, n
+    # save sum of squares, and material properties
     hist_file.write('{},{},{},{}\n'.format(sum_of_squares, *material_variables))
     hist_file.close()
     
@@ -99,7 +79,7 @@ hist_file = open('./results/history.txt', 'wt')
 hist_file.write('sum of squares of residuals, yeild_stress, K, n\n')
 hist_file.close()
 
-optimisation_result = optimize.fmin(calc_combined_sum_of_squares, material_variables, args=(loads, exp_files, model), xtol=0.005)
+optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(model_params, exp_file, model), xtol=0.005)
 optimised_material_properties = optimisation_result.x
 best_S = optimisation_result.fun
 

@@ -33,7 +33,7 @@ os.chdir('./temp/')
 plasticity_table = job_params.plasticity_table
 load = job_params.load
 job_name = job_params.job_name
-coeff_of_friction = 0.2 #fixed for now, could be variable from inputs
+coeff_of_friction = 0.2 # fixed for now, could be a variable
 model = mdb.Model(name=job_name)
 
 
