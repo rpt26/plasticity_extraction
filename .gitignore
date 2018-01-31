@@ -7,7 +7,7 @@
 # results and temp files
 results/
 temp/
-
+*.txt
 
 ### Github's python .gitignore beyond here
 
