@@ -12,9 +12,8 @@ exp_filename = 'example.csv' # experiemntal data filename as a string
 # define the constitutive law as detailed in docs
 model = 'ludwick' 
 # first guess at material variables as defined by constitutive law
-yield_stress = 500
-K = 500
-n = 1
+# e.g. Ludwick-holloman [yield_stress, K, n]
+material_variables = [500, 500, 1]
 
 # optional parameters, will take default values if not defineds
 coeff_of_friction = 0.2

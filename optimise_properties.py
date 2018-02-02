@@ -19,17 +19,16 @@ def calc_r_squared(exp, model):
     
     return r_squared
 
-def calc_sum_of_squares(material_variables, model_params, exp_file, model):
+def calc_sum_of_squares(material_variables, exp_disp_load):
     '''Use FEM to generate a data saet from some material properties 
        to be compared with experiment. Calculate the sum of the square 
        of the residuals, i.e. a quantity to be minimised to increase 
        the agreement between model and experiment.'''
-    experimental_filename = exp_file
-    expCsv = np.genfromtxt(experimental_filename, delimiter=",")
-    exp_disp = expCsv[:,1]
+    # experimental displacement
+    exp_load = exp_disp_load[:,1]
 
     try:
-        modelled_disp = run_simulation(material_variables, model_params)[:,1]
+        modelled_disp = run_simulation(material_variables)[:,1]
     except:
         modelled_disp = np.ones_like(exp_disp)
         print('Abaqus run failed! Attempting to continue...')
@@ -69,19 +68,31 @@ except:
 
 # grab some stuff from the inputs file:
 run_simulation = simulate.models[inputs.model]
-model_params = inputs.model_params
+
 exp_file = inputs.exp_file
-material_variables = inputs.init_material_properties
+material_variables = inputs.material_variables
 model = inputs.model
 
 
+raw_load_disp_data = np.genfromtxt(exp_filename, delimiter=',')
+load = raw_load_disp_data[:,0]
+displacement = raw_load_disp_data[:,1]
 
+max_displacement = np.amax(displacement)
+interpolated_disp = np.linspace(0, max_displacement, num=101)
+interpolated_load = np.interpolate(interpolated_disp, displacement, load)
+scaled_displacement = interpolated_disp / (inputs.indenter_radius)
+scaled_load = interpolated_load / (inputs.indenter_radius**2)
+
+
+
+exp_disp_load = np.array((scaled_disp, scaled_load)).T
 
 hist_file = open('./results/history.txt', 'wt')
 hist_file.write('sum of squares of residuals, yeild_stress, K, n\n')
 hist_file.close()
 
-optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(model_params, exp_file, model), xtol=0.005)
+optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(exp_disp_load), xtol=0.005)
 optimised_material_properties = optimisation_result.x
 best_S = optimisation_result.fun
 
