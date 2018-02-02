@@ -3,9 +3,9 @@ import numpy as np
 import job_params
 
 def extract_odb(path_to_odb):
-    stepName = 'Creep-Dwell Time'
-    historyRegionName = 'Node Load Application-1.1'
-    historyOutputName = 'U2'
+    stepName = 'Loading Step'
+    historyRegionName = 'Node Rigid Loading Part-1.1'
+    historyOutputName = 'RF2'
     
     # open odb file
     ODBFile = odbAccess.openOdb(path = path_to_odb)
@@ -23,7 +23,7 @@ def extract_odb(path_to_odb):
     # print historyRegion.historyOutputs.keys()
     data = np.array(historyRegion.historyOutputs[historyOutputName].data)
     
-    data[:,1] = (data[0,1] - data[:,1]) * 1000
+    data[:,1] = (data[0,1] - data[:,1]) * 1
 
     return data
 
