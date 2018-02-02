@@ -2,7 +2,19 @@
 
 # define the model: a string linked to a simulation model set up in the simulate module
 
-model = 'ludwig' 
-model_params = [3000]  # e.g. max load for plasticity model
-exp_file = '3000.csv' # experiemntal data file as a string
-init_material_properties = [300, 300, 0.5] # these have to match the model being used
+
+sample_modulus = 210 # GPa
+sample_poisson = 0.3 # unitless
+indenter_radius = 1 # mm
+exp_filename = 'example.csv' # experiemntal data filename as a string
+
+
+# define the constitutive law as detailed in docs
+model = 'ludwick' 
+# first guess at material variables as defined by constitutive law
+yield_stress = 500
+K = 500
+n = 1
+
+# optional parameters, will take default values if not defineds
+coeff_of_friction = 0.2
