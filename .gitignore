@@ -1,13 +1,15 @@
 
 
 # Abaqus stuff that we don't want to include
-*.rec
-*.rpy
+*.rec*
+*.rpy*
+*.log*
+
 
 # results and temp files
 results/
 temp/
-
+*.txt
 
 ### Github's python .gitignore beyond here
 
