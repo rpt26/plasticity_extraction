@@ -68,11 +68,11 @@ def simulate_plasticity_ludwick(material_variables):
 def simulate_plasticity_voce(material_variables):
 
     yield_stress = inputs.material_variables[0]
-    K = inputs.material_variables[1]
-    n = inputs.material_variables[2]
+    saturation_stress = inputs.material_variables[1]
+    characteristic_strain = inputs.material_variables[2]
     
     
-    job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(load, np.random.randint(99999), yield_stress, K, n)
+    job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(max_displacement, np.random.randint(99999), yield_stress, K, n)
     job_name = job_name.replace('.', '-')
     job_name = job_name.replace(' ', '')
 
@@ -110,7 +110,9 @@ def simulate_plasticity_voce(material_variables):
     return data
 
 models = dict(ludwick=simulate_plasticity_ludwick,
-              voce=simulate_plasticity_voce)
+              voce=simulate_plasticity_voce,
+              Ludwick=simulate_plasticity_ludwick,
+              Voce=simulate_plasticity_voce)
 
 
 
