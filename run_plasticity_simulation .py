@@ -33,7 +33,13 @@ os.chdir('./temp/')
 plasticity_table = job_params.plasticity_table
 load = job_params.load
 job_name = job_params.job_name
-coeff_of_friction = 0.2 #fixed for now, could be variable from inputs
+coeff_of_friction = job_params.coeff_of_friction
+
+sample_modulus = job_params.sample_modulus * 1000 # change from GPa to MPa
+sample_poisson = job_params.sample_poisson # unitless
+
+
+
 model = mdb.Model(name=job_name)
 
 
