@@ -3,10 +3,10 @@
 # define the model: a string linked to a simulation model set up in the simulate module
 
 
-sample_modulus = 210 # GPa
-sample_poisson = 0.3 # unitless
+sample_modulus = 117 # GPa
+sample_poisson = 0.33 # unitless
 indenter_radius = 1 # mm
-exp_filename = 'example.csv' # experiemntal data filename as a string
+exp_filename = 'Copper.csv' # experiemntal data filename as a string
 
 
 # define the constitutive law as detailed in docs

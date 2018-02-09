@@ -23,7 +23,7 @@ def extract_odb(path_to_odb):
     # print historyRegion.historyOutputs.keys()
     data = np.array(historyRegion.historyOutputs[historyOutputName].data)
     
-    data[:,1] = (data[0,1] - data[:,1]) * 1
+    data[:,1] = data[:,1] * -1
 
     return data
 

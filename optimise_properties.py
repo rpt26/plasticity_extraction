@@ -27,21 +27,21 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
     # experimental displacement
     exp_load = exp_disp_load[:,1]
 
-    try:
-        modelled_disp = run_simulation(material_variables)[:,1]
-    except:
-        modelled_disp = np.ones_like(exp_disp)
-        print('Abaqus run failed! Attempting to continue...')
+   # try:
+    modelled_load = run_simulation(material_variables)[:,1]
+    #except:
+    #    modelled_load = np.ones_like(exp_load)
+    #    print('Abaqus run failed! Attempting to continue...')
 
     
-    if len(modelled_disp) != len(exp_disp):
-        modelled_disp = np.zeros_like(exp_disp)
+    if len(modelled_load) != len(exp_load):
+        modelled_load = np.zeros_like(exp_load)
 
         ## I've made the assumption that there are the same number of data points
         # at every load. If not a correction needs to be made here.
     
-    sum_of_squares = np.sum((exp_disp - modelled_disp) ** 2)
-    r_squared = calc_r_squared(exp_disp, modelled_disp)
+    sum_of_squares = np.sum((exp_load - modelled_load) ** 2)
+    r_squared = calc_r_squared(exp_load, modelled_load)
         
     rhist_file = open('./results/r_sq-history.txt', 'at')
     # save r_squared,  material properties (currently 3 for all the laws used
@@ -69,7 +69,7 @@ except:
 # grab some stuff from the inputs file:
 run_simulation = simulate.models[inputs.model]
 
-exp_file = inputs.exp_file
+exp_filename = inputs.exp_filename
 material_variables = inputs.material_variables
 model = inputs.model
 
@@ -80,19 +80,19 @@ displacement = raw_load_disp_data[:,1]
 
 max_displacement = np.amax(displacement)
 interpolated_disp = np.linspace(0, max_displacement, num=101)
-interpolated_load = np.interpolate(interpolated_disp, displacement, load)
+interpolated_load = np.interp(interpolated_disp, displacement, load)
 scaled_displacement = interpolated_disp / (inputs.indenter_radius)
 scaled_load = interpolated_load / (inputs.indenter_radius**2)
 
 
 
-exp_disp_load = np.array((scaled_disp, scaled_load)).T
+exp_disp_load = np.array((scaled_displacement, scaled_load)).T
 
 hist_file = open('./results/history.txt', 'wt')
 hist_file.write('sum of squares of residuals, yeild_stress, K, n\n')
 hist_file.close()
 
-optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(exp_disp_load), xtol=0.005)
+optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(exp_disp_load,), xtol=0.005)
 optimised_material_properties = optimisation_result.x
 best_S = optimisation_result.fun
 
