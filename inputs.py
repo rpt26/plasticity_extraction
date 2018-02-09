@@ -10,10 +10,10 @@ exp_filename = 'Copper.csv' # experiemntal data filename as a string
 
 
 # define the constitutive law as detailed in docs
-model = 'ludwick' 
+model = 'voce' 
 # first guess at material variables as defined by constitutive law
 # e.g. Ludwick-holloman [yield_stress, K, n]
-material_variables = [500, 500, 1]
+material_variables = [350, 400, 0.5]
 
 # optional parameters, will take default values if not defineds
 coeff_of_friction = 0.2

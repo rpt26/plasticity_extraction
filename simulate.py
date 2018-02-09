@@ -72,7 +72,7 @@ def simulate_plasticity_voce(material_variables):
     characteristic_strain = inputs.material_variables[2]
     
     
-    job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(max_displacement, np.random.randint(99999), yield_stress, K, n)
+    job_name = '{:3g}_ID{:g}_YS{:4g}_SS{:4g}_CS{:4g}'.format(max_displacement, np.random.randint(99999), yield_stress, saturation_stress, characteristic_strain)
     job_name = job_name.replace('.', '-')
     job_name = job_name.replace(' ', '')
 
@@ -81,14 +81,14 @@ def simulate_plasticity_voce(material_variables):
                            'import numpy as np\n' +
                            'yield_stress={}\n'.format(yield_stress) +
                            'saturation_stress={}\n'.format(saturation_stress) +
-                           'characeristic_strain={}\n'.format(characteristic_strain) +
+                           'characteristic_strain={}\n'.format(characteristic_strain) +
                            'max_displacement={}\n'.format(max_displacement) +
                            'coeff_of_friction={}\n'.format(coeff_of_friction) +
                            'sample_modulus={}\n'.format(inputs.sample_modulus) +
                            'sample_poisson={}\n'.format(inputs.sample_poisson) +
                            'indenter_radius={}\n'.format(inputs.indenter_radius) +
                            'strains = np.linspace(0, 2, num=500)\n' +
-                           'stresses = saturation_stress - (saturation_stress - yield_stress) * np.exp(-strains / characteristic_strain) \n' +
+                           'stresses = yield_stress + (saturation_stress)*(1-np.exp(-strains / characteristic_strain)) \n' +
                            'plasticity_table = np.empty((len(strains), 2))\n' +
                            'plasticity_table[:,0] = stresses\n' +
                            'plasticity_table[:,1] = strains\n' +
@@ -98,7 +98,7 @@ def simulate_plasticity_voce(material_variables):
     with open('job_params.py', 'wt') as file:
         file.write(parameter_file_text)
 
-    expCsv = np.genfromtxt(experimental_filename, delimiter=",")
+    expCsv = np.genfromtxt(inputs.exp_filename, delimiter=",")
 
 
     subprocess.run(['abaqus', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
