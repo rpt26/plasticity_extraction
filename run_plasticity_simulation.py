@@ -172,7 +172,7 @@ del mdb.models[job_name].historyOutputRequests['H-Output-1']
 mdb.models[job_name].HistoryOutputRequest(createStepName='Loading Step', name=
     'Indenter Load', rebar=EXCLUDE, region=
     mdb.models[job_name].rootAssembly.allInstances['Rigid Loading Part-1'].sets['Reference Point Set']
-    , sectionPoints=DEFAULT, timeInterval=0.01, variables=('U2', 'RF2'))
+    , sectionPoints=DEFAULT, timeInterval=0.02, variables=('U2', 'RF2'))
 mdb.models[job_name].FieldOutputRequest(createStepName='Loading Step', name=
     'F-Output-1', timeInterval=0.2, variables=('MISES', 'PEEQ', 'U'))
 mdb.models[job_name].ContactProperty('Friction Coefficient')

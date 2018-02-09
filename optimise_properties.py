@@ -34,8 +34,8 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
     #    print('Abaqus run failed! Attempting to continue...')
 
     
-    if len(modelled_load) != len(exp_load):
-        modelled_load = np.zeros_like(exp_load)
+    #if len(modelled_load) != len(exp_load):
+   #     modelled_load = np.zeros_like(exp_load)
 
         ## I've made the assumption that there are the same number of data points
         # at every load. If not a correction needs to be made here.
@@ -79,7 +79,7 @@ load = raw_load_disp_data[:,0]
 displacement = raw_load_disp_data[:,1]
 
 max_displacement = np.amax(displacement)
-interpolated_disp = np.linspace(0, max_displacement, num=101)
+interpolated_disp = np.linspace(0, max_displacement, num=51)
 interpolated_load = np.interp(interpolated_disp, displacement, load)
 scaled_displacement = interpolated_disp / (inputs.indenter_radius)
 scaled_load = interpolated_load / (inputs.indenter_radius**2)
