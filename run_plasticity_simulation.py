@@ -19,6 +19,7 @@ import os
 import math
 
 import job_params
+import inputs
 
 # material variables will be the quantities to be fitted wrt experimental data
 # parameters will be fixed quantitities like load
