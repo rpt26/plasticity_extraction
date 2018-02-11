@@ -4,7 +4,7 @@
 *.rec*
 *.rpy*
 *.log*
-
+job_params.py
 
 # results and temp files
 results/
