@@ -6,10 +6,12 @@
 *.log*
 job_params.py
 
+
 # results and temp files
 results/
 temp/
 *.txt
+*.pdf
 
 ### Github's python .gitignore beyond here
 
