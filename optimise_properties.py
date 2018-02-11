@@ -8,6 +8,7 @@ import math
 import time
 import simulate
 import inputs
+from matplotlib import pyplot as plt
 
 def calc_r_squared(exp, model):
     '''Return the coefficient of determination to characterise
@@ -26,13 +27,18 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
        the agreement between model and experiment.'''
     # experimental displacement
     exp_load = exp_disp_load[:,1]
+    exp_disp = exp_disp_load[:,0]
+    try:
+        modelled_load = run_simulation(material_variables)[:,1]
+    except:
+        modelled_load = np.ones_like(exp_load)
+        print('Abaqus run failed! Attempting to continue...')
 
-   # try:
-    modelled_load = run_simulation(material_variables)[:,1]
-    #except:
-    #    modelled_load = np.ones_like(exp_load)
-    #    print('Abaqus run failed! Attempting to continue...')
-
+    plt.clf()
+    experimental_plot = plt.plot(exp_disp, exp_load, 'g-', label='Exp')
+    modelled_plot = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
+    plt.legend(handles=[experimental_plot, modelled_plot])
+    plt.savefig('Load-Disp_comparison.pdf')
     
     #if len(modelled_load) != len(exp_load):
    #     modelled_load = np.zeros_like(exp_load)
