@@ -33,12 +33,13 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
     except:
         modelled_load = np.ones_like(exp_load)
         print('Abaqus run failed! Attempting to continue...')
-
-    plt.clf()
-    experimental_plot = plt.plot(exp_disp, exp_load, 'g-', label='Exp')
-    modelled_plot = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
-    plt.legend(handles=[experimental_plot, modelled_plot])
-    plt.savefig('Load-Disp_comparison.pdf')
+    
+    try:
+        plt.clf()
+        experimental_plot, = plt.plot(exp_disp, exp_load, 'g-', label='Exp')
+        modelled_plot, = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
+        plt.legend(handles=[experimental_plot, modelled_plot])
+        plt.savefig('Load-Disp_comparison.pdf')
     
     #if len(modelled_load) != len(exp_load):
    #     modelled_load = np.zeros_like(exp_load)
