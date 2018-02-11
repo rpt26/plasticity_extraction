@@ -20,7 +20,7 @@ else:
     coeff_of_friction = 0.2
 
     
-def simulate_plasticity_ludwick(material_variables):
+def simulate_plasticity_voce(material_variables):
     yield_stress = material_variables[0]
     K = material_variables[1]
     n = material_variables[2]
@@ -65,14 +65,12 @@ def simulate_plasticity_ludwick(material_variables):
     return data
 
 
-def simulate_plasticity_voce(material_variables):
-
-    yield_stress = inputs.material_variables[0]
-    saturation_stress = inputs.material_variables[1]
-    characteristic_strain = inputs.material_variables[2]
+def simulate_plasticity_ludwick(material_variables):
+    yield_stress = material_variables[0]
+    K = material_variables[1]
+    n = material_variables[2]
     
-    
-    job_name = '{:3g}_ID{:g}_YS{:4g}_SS{:4g}_CS{:4g}'.format(max_displacement, np.random.randint(99999), yield_stress, saturation_stress, characteristic_strain)
+    job_name = '{:3g}_ID{:g}_Y{:4g}_K{:4g}_n{:4g}'.format(max_displacement, np.random.randint(99999), yield_stress, K, n)
     job_name = job_name.replace('.', '-')
     job_name = job_name.replace(' ', '')
 
@@ -80,15 +78,15 @@ def simulate_plasticity_voce(material_variables):
     parameter_file_text = ('\n' +
                            'import numpy as np\n' +
                            'yield_stress={}\n'.format(yield_stress) +
-                           'saturation_stress={}\n'.format(saturation_stress) +
-                           'characteristic_strain={}\n'.format(characteristic_strain) +
+                           'K={}\n'.format(K) +
+                           'n={}\n'.format(n) +
                            'max_displacement={}\n'.format(max_displacement) +
                            'coeff_of_friction={}\n'.format(coeff_of_friction) +
                            'sample_modulus={}\n'.format(inputs.sample_modulus) +
                            'sample_poisson={}\n'.format(inputs.sample_poisson) +
                            'indenter_radius={}\n'.format(inputs.indenter_radius) +
                            'strains = np.linspace(0, 2, num=500)\n' +
-                           'stresses = yield_stress + (saturation_stress)*(1-np.exp(-strains / characteristic_strain)) \n' +
+                           'stresses = yield_stress + K * (1 - np.exp(-strains / n)) \n' +
                            'plasticity_table = np.empty((len(strains), 2))\n' +
                            'plasticity_table[:,0] = stresses\n' +
                            'plasticity_table[:,1] = strains\n' +
@@ -102,9 +100,11 @@ def simulate_plasticity_voce(material_variables):
 
 
     subprocess.run(['abaqus', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
-    # wait for data to be written (seemed to not be finding the file so trying this) 
+    # wait for data to be written (seemed to not be finding the file so trying this)
+    time.sleep(1) 
     subprocess.run(['abaqus', 'python', 'extract_data.py'], shell=True)
     print('waiting')
+    time.sleep(1)
     data = np.genfromtxt('./results/' + job_name + '.csv', delimiter=',')
 
     return data
