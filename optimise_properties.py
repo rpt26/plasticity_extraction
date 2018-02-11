@@ -40,7 +40,8 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
         modelled_plot, = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
         plt.legend(handles=[experimental_plot, modelled_plot])
         plt.savefig('Load-Disp_comparison.pdf')
-    
+    except:
+	    pass
     #if len(modelled_load) != len(exp_load):
    #     modelled_load = np.zeros_like(exp_load)
 

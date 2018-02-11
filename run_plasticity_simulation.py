@@ -19,6 +19,7 @@ import os
 import math
 
 import job_params
+import inputs
 
 # material variables will be the quantities to be fitted wrt experimental data
 # parameters will be fixed quantitities like load
@@ -39,7 +40,15 @@ sample_poisson = job_params.sample_poisson # unitless
 
 max_displacement = job_params.max_displacement
 model = mdb.Model(name=job_name)
-
+if inputs.seeds:
+    seeds = inputs.seeds
+else:
+    seeds = 150
+	
+if inputs.num_cores:
+    num_cores = inputs.num_cores
+else:
+    num_cores = 1
 
 mdb.models[job_name].ConstrainedSketch(name='__profile__', sheetSize=2.0)
 mdb.models[job_name].sketches['__profile__'].sketchOptions.setValues(
@@ -249,11 +258,11 @@ mdb.models[job_name].boundaryConditions['Displacement Condition'].setValuesInSte
 mdb.models[job_name].parts['Specimen'].seedEdgeByBias(biasMethod=SINGLE, 
     constraint=FINER, end1Edges=
     mdb.models[job_name].parts['Specimen'].edges.getSequenceFromMask((
-    '[#42 ]', ), ), number=90, ratio=1.0)
+    '[#42 ]', ), ), number=seeds, ratio=1.0)
 mdb.models[job_name].parts['Specimen'].seedEdgeByBias(biasMethod=SINGLE, 
     constraint=FINER, end1Edges=
     mdb.models[job_name].parts['Specimen'].edges.getSequenceFromMask((
-    '[#81 ]', ), ), number=45, ratio=1.0)
+    '[#81 ]', ), ), number=(seeds/2), ratio=1.0)
 mdb.models[job_name].parts['Specimen'].setMeshControls(elemShape=TRI, regions=
     mdb.models[job_name].parts['Specimen'].faces.getSequenceFromMask(('[#1 ]', 
     ), ))
@@ -342,7 +351,7 @@ mdb.Job(atTime=None, contactPrint=OFF, description='', echoPrint=OFF,
     explicitPrecision=SINGLE, getMemoryFromAnalysis=True, historyPrint=OFF, 
     memory=90, memoryUnits=PERCENTAGE, model=job_name, modelPrint=OFF, 
     multiprocessingMode=DEFAULT, name=job_name, nodalOutputPrecision=SINGLE, 
-    numCpus=8, numDomains=8, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
+    numCpus=num_cores, numDomains=num_cores, numGPUs=0, queue=None, resultsFormat=ODB, scratch=
     '', type=ANALYSIS, userSubroutine='', waitHours=0, waitMinutes=0)
 mdb.jobs[job_name].submit(consistencyChecking=OFF)
 mdb.jobs[job_name].waitForCompletion()
