@@ -54,10 +54,7 @@ def simulate_plasticity_ludwick(material_variables):
 
     expCsv = np.genfromtxt(inputs.exp_filename, delimiter=",")
 
-    if sys.platform == 'linux' or sys.platform = 'linux2':
-        subprocess.run(['/home/rob/software/abaqus/6.14-1/code/bin/abq6141', 'cae', 'noGUI=run_plasticity_simulation.py'])
-    else:
-        subprocess.run(['/home/rob/software/abaqus/6.14-1/code/bin/abq6141', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
+    subprocess.run(['abaqus', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
 # wait for data to be written (seemed to not be finding the file so trying this)
     time.sleep(1) 
     subprocess.run(['abaqus', 'python', 'extract_data.py'], shell=True)
@@ -102,11 +99,7 @@ def simulate_plasticity_voce(material_variables):
     expCsv = np.genfromtxt(inputs.exp_filename, delimiter=",")
 
 
-    if sys.platform == 'linux' or sys.platform = 'linux2':
-        subprocess.run(['/home/rob/software/abaqus/6.14-1/code/bin/abq6141', 'cae', 'noGUI=run_plasticity_simulation.py'])
-    else:
-        # needs shell=True on windows, should invesigate
-        subprocess.run(['/home/rob/software/abaqus/6.14-1/code/bin/abq6141', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
+    subprocess.run(['abaqus', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
     # wait for data to be written (seemed to not be finding the file so trying this)
     time.sleep(1) 
     subprocess.run(['abaqus', 'python', 'extract_data.py'], shell=True)
