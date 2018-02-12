@@ -39,6 +39,9 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
         experimental_plot, = plt.plot(exp_disp, exp_load, 'g-', label='Exp')
         modelled_plot, = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
         plt.legend(handles=[experimental_plot, modelled_plot])
+        plt.xlabel('Displacement (Microns)')
+        plt.ylabel('Load (N)')
+        plt.title('Comparison of the latest modelled and the experimental load-displacement curves')
         plt.savefig('Load-Disp_comparison.pdf')
     except:
         pass
