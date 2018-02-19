@@ -8,7 +8,7 @@ job_params.py
 
 
 # results and temp files
-results/
+*results*/
 temp/
 *.txt
 *.pdf
