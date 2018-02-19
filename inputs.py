@@ -21,7 +21,9 @@ material_variables = [400, 400, 0.5]
 coeff_of_friction = 0.2
 
 # Mesh parameters
-seeds = 80
+# A parameter related to the number of elements under the indenter
+# too low a value can lead to artefacts (non-smooth) in the load displacement curve
+seeds = 80 
 
 # Number of cores for simulations, default num_cores = 1
 num_cores = 1
