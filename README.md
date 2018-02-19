@@ -11,7 +11,7 @@ The script is designed to be simple to use. The script requires a system with ab
 
 The script is then run with the command "`python optimise_properties.py`" assuming that a suitable python installation and abaqus installation are discoverable from your system's path. The simplest option on a windows machine is to install Anaconda and Abaqus and this should work out of the box.
 
-An example data file and input file are given for a 3000N load.
+An example data file and input file are given for an experiment performed on annealed copper.
 
 Final material properties are then output in a newly created "results" directory, along with a file detailing the history of the search, mostly to allow us to characterise the optimisation alghorithm and the "shape" of parameter space. A load of Abaqus related stuff gets left in the temp directory, but can usually be ignored and deleted.
 
