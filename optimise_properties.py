@@ -39,6 +39,9 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
         experimental_plot, = plt.plot(exp_disp, exp_load, 'g-', label='Exp')
         modelled_plot, = plt.plot(exp_disp, modelled_load, 'b.', label='Model')
         plt.legend(handles=[experimental_plot, modelled_plot])
+        plt.xlabel('Displacement (Microns)')
+        plt.ylabel('Load (N)')
+        plt.title('Comparison of the latest modelled and the experimental load-displacement curves')
         plt.savefig('Load-Disp_comparison.pdf')
     except:
         pass
@@ -101,7 +104,10 @@ hist_file = open('./results/history.txt', 'wt')
 hist_file.write('sum of squares of residuals, yeild_stress, K, n\n')
 hist_file.close()
 
-optimisation_result = optimize.fmin(calc_sum_of_squares, material_variables, args=(exp_disp_load,), xtol=0.005)
+algorithm = 'Nelder-Mead'
+
+
+optimisation_result = optimize.minimize(calc_sum_of_squares, material_variables, args=(exp_disp_load,), tol=0.005, method=algorithm)
 optimised_material_properties = optimisation_result.x
 best_S = optimisation_result.fun
 

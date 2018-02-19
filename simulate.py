@@ -7,6 +7,7 @@ import glob
 import math
 import time
 import inputs
+import sys
 
 exp_filename = inputs.exp_filename
 raw_load_disp_data = np.genfromtxt(exp_filename, delimiter=',')
@@ -53,9 +54,8 @@ def simulate_plasticity_ludwick(material_variables):
 
     expCsv = np.genfromtxt(inputs.exp_filename, delimiter=",")
 
-
     subprocess.run(['abaqus', 'cae', 'noGUI=run_plasticity_simulation.py'], shell=True)
-    # wait for data to be written (seemed to not be finding the file so trying this)
+# wait for data to be written (seemed to not be finding the file so trying this)
     time.sleep(1) 
     subprocess.run(['abaqus', 'python', 'extract_data.py'], shell=True)
     print('waiting')
