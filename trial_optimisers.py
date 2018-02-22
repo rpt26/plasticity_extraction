@@ -8,6 +8,7 @@ import math
 import time
 import simulate
 import inputs
+import time
 from matplotlib import pyplot as plt
 
 def calc_r_squared(exp, model):
@@ -20,7 +21,7 @@ def calc_r_squared(exp, model):
     
     return r_squared
 
-def calc_sum_of_squares(material_variables, exp_disp_load):
+def calc_sum_of_squares(material_variables, exp_disp_load, algorithm):
     '''Use FEM to generate a data saet from some material properties 
        to be compared with experiment. Calculate the sum of the square 
        of the residuals, i.e. a quantity to be minimised to increase 
@@ -55,18 +56,23 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
     sum_of_squares = np.sum((exp_load - modelled_load) ** 2)
     r_squared = calc_r_squared(exp_load, modelled_load)
         
-    rhist_file = open('./results/r_sq-history.txt', 'at')
+    rhist_file = open('./results/r_sq-history' + algorithm + '.txt', 'at')
     # save r_squared,  material properties (currently 3 for all the laws used
     rhist_file.write('{},{},{},{}\n'.format(np.mean(r_squared), *material_variables))
     rhist_file.close()
     
-    hist_file = open('./results/history.txt', 'at')
+    hist_file = open('./results/history' + algorithm + '.txt', 'at')
     # save sum of squares, and material properties
     hist_file.write('{},{},{},{}\n'.format(sum_of_squares, *material_variables))
     hist_file.close()
     
     return sum_of_squares
 
+ 
+def dummy_func(some_array, *other_args):
+    total = 4.2 - 0.1 * some_array[0] + 1.3 * some_array[1] ** 2 + 3.2 * some_array[2] ** 4
+    return total
+     
 try:
     os.mkdir('./results/')
 except:
@@ -104,14 +110,31 @@ hist_file = open('./results/history.txt', 'wt')
 hist_file.write('sum of squares of residuals, yeild_stress, K, n\n')
 hist_file.close()
 
-algorithm = 'Nelder-Mead'
+algorithms = ['Nelder-Mead', 'Powell', 'CG', 'BFGS' ] # 'Newton-CG' 'dogleg' 'trust-krylov', 'trust-exact' 'trust-ncg'
 
-
-optimisation_result = optimize.minimize(calc_sum_of_squares, material_variables, args=(exp_disp_load,), tol=0.005, method=algorithm)
-optimised_material_properties = optimisation_result.x
-best_S = optimisation_result.fun
-
-np.savetxt('./results/optimised_material_properties.csv', np.array([optimised_material_properties]), delimiter=',')
+for algorithm in algorithms:
+    start = time.time()
+    optimisation_result = optimize.minimize(calc_sum_of_squares, material_variables, args=(exp_disp_load, algorithm), tol=0.0001, method=algorithm)
+    finish = time.time()
+    
+    duration = finish - start
+    
+    optimised_material_properties = optimisation_result.x
+    best_S = optimisation_result.fun
+    nfev = optimisation_result.nfev
+    
+    optimiser_result = algorithm + ',{}, {}, {}, {}, {}, {}, {}, {}, {}\n'.format(nfev, 
+                                                                                  duration,
+                                                                                  best_S,
+                                                                                  material_variables[0],
+                                                                                  material_variables[1],
+                                                                                  material_variables[2],
+                                                                                  *optimised_material_properties)
+    with open('./optimiser_results.csv', 'at') as f:
+        f.write(optimiser_result)
+    print('Algorithm, no. func evals, time/s, S, init_material_variables, material_variables\n')
+    print(optimiser_result)
+    np.savetxt('./results/optimised_material_properties.csv', np.array([optimised_material_properties]), delimiter=',')
 
 
 
