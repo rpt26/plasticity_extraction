@@ -30,7 +30,7 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
     exp_disp = exp_disp_load[:,0]
     try:
         modelled_load = run_simulation(material_variables)[:,1]
-    except:
+    except Exception:
         modelled_load = np.ones_like(exp_load)
         print('Abaqus run failed! Attempting to continue...')
     
@@ -43,13 +43,13 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
         plt.ylabel('Load (N)')
         plt.title('Comparison of the latest modelled and the experimental load-displacement curves')
         plt.savefig('Load-Disp_comparison.pdf')
-    except:
+    except Exception:
         pass
     
     #if len(modelled_load) != len(exp_load):
    #     modelled_load = np.zeros_like(exp_load)
 
-        ## I've made the assumption that there are the same number of data points
+        # I've made the assumption that there are the same number of data points
         # at every load. If not a correction needs to be made here.
     
     sum_of_squares = np.sum((exp_load - modelled_load) ** 2)
@@ -69,11 +69,11 @@ def calc_sum_of_squares(material_variables, exp_disp_load):
 
 try:
     os.mkdir('./results/')
-except:
+except Exception:
     pass
 try:
     os.mkdir('./temp/')
-except:
+except Exception:
     pass
 
 
